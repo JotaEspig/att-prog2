@@ -42,6 +42,13 @@ class Movel(db.Model):
     quarto_id = db.Column(db.Integer, db.ForeignKey(Quarto.id), 
                 nullable=True) # a mobilia pode estar em um quarto, ou não
         
+    type = db.Column(db.String(50))
+
+    __mapper_args__ = {
+        'polymorphic_identity':'movel', 
+        'polymorphic_on':type
+    }
+
     def __str__(self): # expressão do objeto em forma textual
         s = f'Móvel: ({self.id}) {self.nome}, '+\
                f'{self.material}'
@@ -51,14 +58,16 @@ class Movel(db.Model):
 
 
 class Mobilia(Movel):
+    id = db.Column(db.Integer, db.ForeignKey('movel.id'), primary_key=True)
+    
+    __mapper_args__ = {
+        'polymorphic_identity': 'mobilia'
+    }   
+
     funcao = db.Column(db.String(254))
-        
+
     def __str__(self): # expressão do objeto em forma textual
-        s = f'Mobília: ({self.id}) {self.nome}, '+\
-               f'{self.funcao}, {self.material}'
-        if self.quarto:
-            s += f', localizada em: {str(self.quarto)}'
-        return s
+        return super().__str__() + f"{self.funcao}"
 
 
 if __name__ == "__main__": # teste das classes
