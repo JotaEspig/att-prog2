@@ -1,5 +1,6 @@
 from config import *
 
+
 class Casa (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     formato = db.Column(db.String(254))
@@ -9,7 +10,8 @@ class Casa (db.Model):
 
     def __str__(self):
         return f'Casa: {self.formato}'        
-        
+
+
 class Quarto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(254))
@@ -31,14 +33,25 @@ class Quarto(db.Model):
         s += f'na casa: {str(self.casa)}'          
         return s
 
-class Mobilia(db.Model):
+
+class Movel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(254))
-    funcao = db.Column(db.String(254))
     material = db.Column(db.String(254))
     
     quarto_id = db.Column(db.Integer, db.ForeignKey(Quarto.id), 
                 nullable=True) # a mobilia pode estar em um quarto, ou não
+        
+    def __str__(self): # expressão do objeto em forma textual
+        s = f'Móvel: ({self.id}) {self.nome}, '+\
+               f'{self.material}'
+        if self.quarto:
+            s += f', localizada em: {str(self.quarto)}'
+        return s
+
+
+class Mobilia(Movel):
+    funcao = db.Column(db.String(254))
         
     def __str__(self): # expressão do objeto em forma textual
         s = f'Mobília: ({self.id}) {self.nome}, '+\
@@ -46,6 +59,7 @@ class Mobilia(db.Model):
         if self.quarto:
             s += f', localizada em: {str(self.quarto)}'
         return s
+
 
 if __name__ == "__main__": # teste das classes
     
